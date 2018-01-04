@@ -224,7 +224,19 @@ exports.createContentTypeNodes = ({
     // First create nodes for each of the entries of that content type
     const entryNodes = entries.map(entryItem => {
       // Get localized fields.
-      const entryItemFields = _.mapValues(entryItem.fields, v => getField(v))
+      const contentTypeFields = contentTypeItem.fields.map(field => field.id);
+      const entryItemsFields = Object.keys(entryItem.fields);
+      const nullFields = _.filter(contentTypeFields, field => !_.includes(entryItemsFields, field));
+
+      const mappedNullFields = nullFields.reduce((accumulator, field) => {
+        accumulator[field] = { 'en-US': null }
+
+        return accumulator;
+      }, {})
+
+      const allFields = _.merge(entryItem.fields, mappedNullFields);
+
+      const entryItemFields = _.mapValues(allFields, v => getField(v))
 
       // Prefix any conflicting fields
       // https://github.com/gatsbyjs/gatsby/pull/1084#pullrequestreview-41662888

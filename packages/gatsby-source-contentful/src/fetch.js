@@ -37,7 +37,7 @@ module.exports = async ({ spaceId, accessToken, host, syncToken }) => {
 
   let currentSyncData
   try {
-    let query = syncToken ? { nextSyncToken: syncToken } : { initial: true }
+    let query = { initial: true }
     currentSyncData = await client.sync(query)
   } catch (e) {
     console.log(`error fetching contentful data`, e)
